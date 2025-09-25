@@ -1,0 +1,14 @@
+body { font: 14px system-ui, sans-serif; padding: 12px; width: 360px; }
+.title { font-weight: 600; }
+.row { display:flex; align-items:center; }
+.between { justify-content: space-between; }
+.gap > * { margin-right: 8px; }
+.hint { color:#666; font-size:12px; margin: 6px 0; }
+textarea { width:100%; height:140px; }
+button { padding:6px 10px; }
+.pill { padding:3px 8px; border-radius: 999px; font-size:12px; background:#eee; }
+.pill.ok { background:#d1fadf; }
+.pill.warn { background:#fee2e2; }
+.toggle { display:flex; gap:8px; align-items:center; margin:8px 0; }
+
+

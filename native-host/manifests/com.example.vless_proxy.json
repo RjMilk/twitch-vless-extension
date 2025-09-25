@@ -1,0 +1,9 @@
+{
+  "name": "com.example.vless_proxy",
+  "description": "Xray VLESS controller",
+  "path": "/usr/local/bin/vless_host",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://__EXTENSION_ID__/"]
+}
+
+

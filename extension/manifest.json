@@ -1,0 +1,20 @@
+{
+  "name": "Twitch-gated VLESS Proxy (Selected Sites)",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "description": "Routes only chosen domains via local VLESS (xray-core). Enabled only if user follows a specific Twitch channel.",
+  "permissions": [
+    "proxy",
+    "storage",
+    "activeTab",
+    "scripting",
+    "identity",
+    "contextMenus",
+    "nativeMessaging"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "popup.html" },
+  "background": { "service_worker": "background.js", "type": "module" }
+}
+
+

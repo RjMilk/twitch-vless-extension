@@ -1,0 +1,9 @@
+{
+  "name": "vless-native-host",
+  "version": "0.1.0",
+  "private": true,
+  "bin": { "vless_host": "vless_host.js" },
+  "dependencies": {}
+}
+
+
