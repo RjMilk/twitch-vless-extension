@@ -10,5 +10,7 @@ button { padding:6px 10px; }
 .pill.ok { background:#d1fadf; }
 .pill.warn { background:#fee2e2; }
 .toggle { display:flex; gap:8px; align-items:center; margin:8px 0; }
+.alert { margin:8px 0; padding:8px; border-radius:4px; font-size:12px; }
+.alert.error { background:#fde8e8; color:#b91c1c; }
 
 
