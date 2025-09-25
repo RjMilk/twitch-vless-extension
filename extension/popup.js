@@ -4,6 +4,42 @@ const $ = s => document.querySelector(s);
 const ta = $("#domains");
 const enabled = $("#enabled");
 const pill = $("#twitchStatus");
+const signin = $("#signin");
+const signout = $("#signout");
+const startBtn = $("#startXray");
+const stopBtn = $("#stopXray");
+const configWarning = $("#configWarning");
+
+function hasPlaceholder(value) {
+  return typeof value === "string" && /REPLACE_WITH/.test(value);
+}
+
+function updateConfigState() {
+  const missing = [];
+  if (!CONFIG.TWITCH_CLIENT_ID || hasPlaceholder(CONFIG.TWITCH_CLIENT_ID)) {
+    missing.push("TWITCH_CLIENT_ID");
+  }
+  if (!CONFIG.TARGET_BROADCASTER_ID || hasPlaceholder(CONFIG.TARGET_BROADCASTER_ID)) {
+    missing.push("TARGET_BROADCASTER_ID");
+  }
+
+  const ok = missing.length === 0;
+  if (configWarning) {
+    configWarning.hidden = ok;
+    if (!ok) {
+      configWarning.textContent = `Перед использованием заполните ${missing.join(", ")}`;
+    }
+  }
+
+  [signin, signout, startBtn, stopBtn].forEach(el => { if (el) el.disabled = !ok; });
+  if (enabled) {
+    enabled.disabled = !ok;
+    if (!ok) enabled.checked = false;
+  }
+  return ok;
+}
+
+updateConfigState();
 
 function setPill(state, text) {
   pill.classList.remove("ok","warn");
@@ -15,6 +51,8 @@ function setPill(state, text) {
 async function load() {
   const res = await chrome.runtime.sendMessage({ type: "GET_DOMAINS" });
   ta.value = (res.domains || []).join("\n");
+
+  updateConfigState();
 
   chrome.proxy.settings.get({ incognito: false }, details => {
     enabled.checked = details?.value?.mode === "pac_script";

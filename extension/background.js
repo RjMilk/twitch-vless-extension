@@ -122,14 +122,22 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       const gate = await requireFollowing();
       if (!gate.ok) return sendResponse({ ok: false, gate });
 
-      const res = await chrome.runtime.sendNativeMessage(CONFIG.NATIVE_APP, {
-        action: "apply_config",
-        profile: msg.profile // {server, port, uuid, flow, tls, sni, transport...}
-      });
-      sendResponse(res);
+      try {
+        const res = await chrome.runtime.sendNativeMessage(CONFIG.NATIVE_APP, {
+          action: "apply_config",
+          profile: msg.profile // {server, port, uuid, flow, tls, sni, transport...}
+        });
+        sendResponse(res);
+      } catch (err) {
+        sendResponse({ success: false, error: err?.message || String(err) });
+      }
     } else if (msg.type === "XRAY_STOP") {
-      const res = await chrome.runtime.sendNativeMessage(CONFIG.NATIVE_APP, { action: "stop" });
-      sendResponse(res);
+      try {
+        const res = await chrome.runtime.sendNativeMessage(CONFIG.NATIVE_APP, { action: "stop" });
+        sendResponse(res);
+      } catch (err) {
+        sendResponse({ success: false, error: err?.message || String(err) });
+      }
     }
   })();
   return true;

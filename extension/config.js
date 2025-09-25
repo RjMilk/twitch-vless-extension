@@ -1,8 +1,19 @@
+const REDIRECT_URI = (() => {
+  try {
+    if (chrome?.identity?.getRedirectURL) {
+      return chrome.identity.getRedirectURL();
+    }
+  } catch (_) {
+    // ignore – fall back to placeholder
+  }
+  return "https://__EXTENSION_ID__.chromiumapp.org/";
+})();
+
 export const CONFIG = {
   // Twitch OAuth
   TWITCH_CLIENT_ID: "REPLACE_WITH_TWITCH_CLIENT_ID",
   // Register this in Twitch console:
-  TWITCH_REDIRECT_URI: "https://__EXTENSION_ID__.chromiumapp.org/",
+  TWITCH_REDIRECT_URI: REDIRECT_URI,
   TWITCH_SCOPES: ["user:read:follows"],
 
   // Twitch gate (must follow this channel to enable proxy)

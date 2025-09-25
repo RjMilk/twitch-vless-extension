@@ -7,6 +7,15 @@ let xrayProc = null;
 const TMP_CFG = path.join(require("os").tmpdir(), "xray-config.json");
 const XRAY_PATH = process.env.XRAY_PATH || "/usr/local/bin/xray"; // set per OS
 
+function ensureXray() {
+  try {
+    fs.accessSync(XRAY_PATH, fs.constants.X_OK);
+    return true;
+  } catch (err) {
+    return { success: false, error: `xray binary not found or not executable at ${XRAY_PATH}` };
+  }
+}
+
 function writeMessage(obj) {
   const buf = Buffer.from(JSON.stringify(obj));
   const header = Buffer.alloc(4);
@@ -58,9 +67,21 @@ function applyConfig(profile) {
   const cfg = xrayConfigFromProfile(profile);
   fs.writeFileSync(TMP_CFG, JSON.stringify(cfg, null, 2));
   if (xrayProc) { try { xrayProc.kill(); } catch(_){} xrayProc = null; }
-  xrayProc = spawn(XRAY_PATH, ["-c", TMP_CFG], { stdio: "ignore" });
-  xrayProc.on("exit", (code) => {
-    // no-op
+  const check = ensureXray();
+  if (check !== true) {
+    return check;
+  }
+  try {
+    xrayProc = spawn(XRAY_PATH, ["-c", TMP_CFG], { stdio: "ignore" });
+  } catch (err) {
+    return { success: false, error: `failed to launch xray: ${err.message}` };
+  }
+  xrayProc.on("error", (err) => {
+    stopXray();
+    console.error("xray process error", err);
+  });
+  xrayProc.on("exit", () => {
+    xrayProc = null;
   });
   return { success: true };
 }
